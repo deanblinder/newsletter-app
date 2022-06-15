@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {HStack, NativeBaseProvider, Spinner, View} from "native-base";
+import {HStack, NativeBaseProvider, Spinner, View, Text} from "native-base";
 import SearchInput from "./searchInput";
 import Filters from "./filters";
 import Articles from "./articles";
@@ -17,6 +17,7 @@ const MainPage = (props:Props) => {
     const [query, setQuery] = useState<string>('');
     const [category, setCategory] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [shouldShowEndMassage, setShouldShowEndMassage] = useState<boolean>(false);
 
     useEffect(() => {
         const fetchData = async ()=> {
@@ -27,6 +28,15 @@ const MainPage = (props:Props) => {
         }
         fetchData();
     },[])
+
+    const endMassageToggle = (articles:Article[]) => {
+        if (articles.length === 0){
+            setShouldShowEndMassage(true)
+        }
+        else {
+            setShouldShowEndMassage(false)
+        }
+    }
 
     const searchArticles = async (query:string) => {
         setQuery(query);
@@ -47,6 +57,7 @@ const MainPage = (props:Props) => {
 
     const getMoreArticles = async () => {
         const response = await articlesActions.getArticles(pageNumber,query,category);
+        endMassageToggle(response?.data.articles)
         setArticles([...articles,...response?.data.articles]);
         setPageNumber(pageNumber + 1);
     }
@@ -62,12 +73,21 @@ const MainPage = (props:Props) => {
             )
     }
 
+    const renderEndMassage = () => {
+      return(
+          <View>
+              <Text>No more articles</Text>
+          </View>
+      )
+    }
+
     return(
         <NativeBaseProvider>
             <View style={styles.container}>
                 <SearchInput setQuery={searchArticles}/>
                 <Filters setFilter={setFilter}/>
                 {isLoading ? renderLoader() : <Articles articles={articles} navigation={props.navigation} getMoreArticles={getMoreArticles}/>}
+                {shouldShowEndMassage && renderEndMassage()}
             </View>
         </NativeBaseProvider>
     )
