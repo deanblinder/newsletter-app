@@ -44,6 +44,8 @@ const MainPage = (props:Props) => {
     }
 
     const searchArticles = async () => {
+        setShouldShowEndMassage(false)
+
         setPageNumber(1);
         setIsLoading(true)
         const response = await articlesActions.getArticles(pageNumber,query,category);
@@ -53,6 +55,8 @@ const MainPage = (props:Props) => {
     }
 
     const setFilter = async () => {
+        setShouldShowEndMassage(false)
+
         setPageNumber(1);
         setIsLoading(true)
         const response = await articlesActions.getArticles(pageNumber,query,category);
@@ -66,6 +70,9 @@ const MainPage = (props:Props) => {
         endMassageToggle(response?.data.articles)
         dispatch(addArticles(response?.data.articles))
         setPageNumber(pageNumber + 1);
+        if (response?.data.articles.length === 0){
+            setShouldShowEndMassage(true)
+        }
     }
 
 
@@ -81,8 +88,8 @@ const MainPage = (props:Props) => {
 
     const renderEndMassage = () => {
       return(
-          <View>
-              <Text>No more articles</Text>
+          <View style={{marginBottom:'10%'}}>
+              <Text style={{fontSize:20,fontWeight:'bold'}}>No more articles</Text>
           </View>
       )
     }
