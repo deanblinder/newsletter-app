@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {VStack, Input, Icon, View} from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import {useDispatch, useSelector} from "react-redux";
+import {setQuery} from "../store/mainPageStore";
 
 type Props = {
     setQuery: (query: string) => void
@@ -11,8 +13,11 @@ const SearchInput = (props:Props) => {
     const [debounce,setDebounce] = useState<any>();
     const [isTimePassed,setIsTimePassed] = useState(false);
 
+    const dispatch = useDispatch()
+
     useEffect(()=>{
         if (isTimePassed){
+            dispatch(setQuery(input))
             props.setQuery(input)
             setIsTimePassed(false)
         }
@@ -20,9 +25,10 @@ const SearchInput = (props:Props) => {
 
     const onSearchInput = (text:string) => {
         setInput(text)
+        dispatch(setQuery(text))
         const setTimeoutId = setTimeout(() => {
             setIsTimePassed(true);
-        }, 300);
+        }, 800);
         setDebounce(setTimeoutId);
         clearTimeout(debounce);
 

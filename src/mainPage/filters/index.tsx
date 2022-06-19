@@ -1,6 +1,8 @@
 import React from "react";
 import {View, Select, Center,Box,CheckIcon} from "native-base";
 import {filters} from "./constants";
+import {useDispatch} from "react-redux";
+import {setCategory} from "../store/mainPageStore";
 
 type Props = {
     setFilter: (filter:string) => void,
@@ -9,8 +11,11 @@ type Props = {
 const Filters = (props:Props) => {
     let [filter, setFilter] = React.useState("");
 
+    const dispatch = useDispatch()
+
     const onFilterPress = (filter:string) => {
         setFilter(filter);
+        dispatch(setCategory(filter))
         props.setFilter(filter);
     }
 

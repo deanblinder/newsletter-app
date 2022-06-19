@@ -6,7 +6,12 @@ const ERRORS = {
 }
 
 const getArticles = async (pageNumber:number,query:string,category:string) => {
-    console.log(pageNumber,query,category)
+    console.log('--------------------')
+    console.log({pageNumber})
+    console.log({query})
+    console.log({category})
+    console.log('--------------------')
+
     try {
         return await axios.get(endpoints.articles(pageNumber,query,category));
     }catch (err){

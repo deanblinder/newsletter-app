@@ -6,24 +6,29 @@ import Articles from "./articles";
 import {articlesActions} from "./articles/articlesActions";
 import {StyleSheet} from "react-native";
 import {Article} from "./articles/types";
+import {useSelector, useDispatch} from "react-redux";
+import {setArticles, addArticles} from "../mainPage/store/mainPageStore";
 
 type Props = {
     navigation: any
 }
 
 const MainPage = (props:Props) => {
-    const [articles, setArticles] = useState<Article[]>([]);
     const [pageNumber, setPageNumber] = useState<number>(1);
-    const [query, setQuery] = useState<string>('');
-    const [category, setCategory] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [shouldShowEndMassage, setShouldShowEndMassage] = useState<boolean>(false);
+
+    const articles = useSelector((state:any) => state.mainPage.articles)
+    const query = useSelector((state:any) => state.mainPage.query)
+    const category = useSelector((state:any) => state.mainPage.category)
+
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await articlesActions.getArticles(pageNumber,query,category);
             setIsLoading(false);
-            setArticles(response?.data.articles);
+            dispatch(setArticles(response?.data.articles))
             setPageNumber(pageNumber + 1);
         }
         fetchData();
@@ -38,19 +43,20 @@ const MainPage = (props:Props) => {
         }
     }
 
-    const searchArticles = async (query:string) => {
-        setQuery(query);
-        setPageNumber(1);
-        const response = await articlesActions.getArticles(pageNumber,query,category);
-        setArticles(response?.data.articles);
-    }
-
-    const setFilter = async (filter:string) => {
-        setCategory(filter);
+    const searchArticles = async () => {
         setPageNumber(1);
         setIsLoading(true)
         const response = await articlesActions.getArticles(pageNumber,query,category);
-        setArticles(response?.data.articles);
+        setIsLoading(false)
+
+        dispatch(setArticles(response?.data.articles))
+    }
+
+    const setFilter = async () => {
+        setPageNumber(1);
+        setIsLoading(true)
+        const response = await articlesActions.getArticles(pageNumber,query,category);
+        dispatch(setArticles(response?.data.articles))
         setIsLoading(false)
         setPageNumber(pageNumber + 1);
     }
@@ -58,7 +64,7 @@ const MainPage = (props:Props) => {
     const getMoreArticles = async () => {
         const response = await articlesActions.getArticles(pageNumber,query,category);
         endMassageToggle(response?.data.articles)
-        setArticles([...articles,...response?.data.articles]);
+        dispatch(addArticles(response?.data.articles))
         setPageNumber(pageNumber + 1);
     }
 
