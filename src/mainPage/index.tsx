@@ -7,7 +7,7 @@ import {articlesActions} from "./articles/articlesActions";
 import {StyleSheet} from "react-native";
 import {Article} from "./articles/types";
 import {useSelector, useDispatch} from "react-redux";
-import {setArticles, addArticles} from "../mainPage/store/mainPageStore";
+import {setArticles, addArticles} from "./store/mainPageStore";
 
 type Props = {
     navigation: any

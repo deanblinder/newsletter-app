@@ -26,7 +26,7 @@ const Filters = (props:Props) => {
                             bg: "teal.600",
                             endIcon: <CheckIcon size="5" />
                         }} mt={1} onValueChange={itemValue => onFilterPress(itemValue)}>
-                            <Select.Item label={'none'} value={filters[2]} />
+                            <Select.Item label={'none'} value={''} />
                             <Select.Item label={filters[0]} value={filters[0]} />
                             <Select.Item label={filters[1]} value={filters[1]} />
                             <Select.Item label={filters[2]} value={filters[2]} />
